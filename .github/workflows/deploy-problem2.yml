@@ -1,0 +1,62 @@
+name: Deploy problem2 to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "problem2/**"
+      - ".github/workflows/deploy-problem2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: problem2
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: problem2/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_PRICES_URL: https://interview.switcheo.com/prices.json
+          VITE_TOKEN_ICON_BASE: https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens
+          VITE_USE_MOCKS: "false"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: problem2/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
