@@ -14,6 +14,9 @@ This solution answered on Markdown file, you can find it here [problem1/README.m
 This solution answered as a Vite React Typescript projects.
 You can run it by running `pnpm install` and `pnpm dev`.
 
+It's already deployed to GitHub Page with two themes (light/dark):
+https://thinhdh-dev.github.io/99-code-challenge/
+
 # Problem 3: Messy React
 
 This solution answered on Markdown file, you can find it here [problem3/solutions.md](problem3/solutions.md)
