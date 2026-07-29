@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Currency Swap</title>
+    <script>
+      // Apply the persisted theme synchronously before React mounts so
+      // the first paint doesn't flash the wrong colour scheme. We read
+      // the same localStorage key the zustand `persist` middleware
+      // uses, so the two stay in sync.
+      (function () {
+        try {
+          var raw = localStorage.getItem("theme");
+          var theme = raw ? JSON.parse(raw).state.theme : "system";
+          var prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)",
+          ).matches;
+          var resolved =
+            theme === "dark" || (theme !== "light" && prefersDark)
+              ? "dark"
+              : "light";
+          document.documentElement.classList.add(resolved);
+          document.documentElement.style.colorScheme = resolved;
+        } catch (e) {
+          /* fall back to light — the React provider will correct it. */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
